@@ -39,7 +39,61 @@ class ReminderStore: ObservableObject {
     
     init() {
         loadReminders()
+        #if DEBUG
+        // Add sample data for screenshots if empty
+        if reminders.isEmpty {
+            loadSampleData()
+        }
+        #endif
     }
+    
+    #if DEBUG
+    private func loadSampleData() {
+        let sampleVouchers = [
+            Reminder(
+                title: "Target Gift Card",
+                voucherCode: "4532-8901-2345-6789",
+                expirationDate: Calendar.current.date(byAdding: .day, value: 45, to: Date()),
+                storeName: "Target",
+                voucherValue: "$50",
+                balance: 35.50
+            ),
+            Reminder(
+                title: "Starbucks Reward",
+                voucherCode: "6011-2345-6789-0123",
+                expirationDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()),
+                storeName: "Starbucks",
+                voucherValue: "$25",
+                balance: 18.75
+            ),
+            Reminder(
+                title: "Amazon Gift Card",
+                voucherCode: "AMZN-GIFT-1234-5678",
+                expirationDate: nil,
+                storeName: "Amazon",
+                voucherValue: "$100",
+                balance: 67.23
+            ),
+            Reminder(
+                title: "Chipotle Rewards",
+                voucherCode: "CHIP-2024-FREE-BOWL",
+                expirationDate: Calendar.current.date(byAdding: .day, value: 2, to: Date()),
+                storeName: "Chipotle",
+                voucherValue: "Free Bowl",
+                balance: nil
+            ),
+            Reminder(
+                title: "Best Buy Store Credit",
+                voucherCode: "BBY-9876-5432-1098",
+                expirationDate: Calendar.current.date(byAdding: .month, value: 6, to: Date()),
+                storeName: "Best Buy",
+                voucherValue: "$200",
+                balance: 142.99
+            )
+        ]
+        reminders = sampleVouchers
+    }
+    #endif
     
     func add(_ reminder: Reminder) {
         reminders.insert(reminder, at: 0)
