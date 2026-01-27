@@ -20,7 +20,6 @@ struct Reminder: Identifiable, Codable, Equatable {
     var storeName: String?
     var voucherValue: String?    // Original value e.g., "$50"
     var balance: Double?         // Current remaining balance
-    var cardImageData: Data?     // Photo of the actual card
     
     init(
         id: UUID = UUID(),
@@ -36,8 +35,7 @@ struct Reminder: Identifiable, Codable, Equatable {
         expirationDate: Date? = nil,
         storeName: String? = nil,
         voucherValue: String? = nil,
-        balance: Double? = nil,
-        cardImageData: Data? = nil
+        balance: Double? = nil
     ) {
         self.id = id
         self.title = title
@@ -53,7 +51,6 @@ struct Reminder: Identifiable, Codable, Equatable {
         self.storeName = storeName
         self.voucherValue = voucherValue
         self.balance = balance
-        self.cardImageData = cardImageData
     }
     
     var isExpiringSoon: Bool {

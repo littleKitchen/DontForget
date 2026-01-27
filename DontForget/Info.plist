@@ -21,9 +21,7 @@
 	<key>CFBundleVersion</key>
 	<string>2</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera is used to scan gift card barcodes and take photos of your cards.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo library access lets you add existing photos of your gift cards.</string>
+	<string>Camera is used to scan gift card barcodes.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Allow location access to get reminders when you're near stores.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

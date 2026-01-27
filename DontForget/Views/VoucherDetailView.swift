@@ -16,16 +16,6 @@ struct VoucherDetailView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    // Card Image
-                    if let data = voucher.cardImageData, let uiImage = UIImage(data: data) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxHeight: 200)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .shadow(radius: 10)
-                    }
-                    
                     // Card Info
                     VStack(spacing: 8) {
                         Text(voucher.title)

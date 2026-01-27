@@ -16,7 +16,6 @@
 		DE968A86993F3D76D9B0CAD7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B840A48C0BDB8B5F0BD88 /* ContentView.swift */; };
 		F3D1B90A115442EBB6F920B4 /* ReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761EF5FD9C6F5EB9CC73877C /* ReminderStore.swift */; };
 		AA1B2C3D4E5F67890123ABCD /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */; };
-		CC3D4E5F67890123ABCDEF01 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4E5F67890123ABCDEF0123 /* ImagePicker.swift */; };
 		EE5F67890123ABCDEF012345 /* VoucherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF67890123ABCDEF01234567 /* VoucherDetailView.swift */; };
 /* End PBXBuildFile section */
 
@@ -32,7 +31,6 @@
 		F903CA338DD5FAC9A0E04D43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FD080C2BE4D168621943371C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
-		DD4E5F67890123ABCDEF0123 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		FF67890123ABCDEF01234567 /* VoucherDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoucherDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -81,7 +79,6 @@
 			children = (
 				0386A577C6E83965C3E7999A /* AddVoucherView.swift */,
 				BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */,
-				DD4E5F67890123ABCDEF0123 /* ImagePicker.swift */,
 				FF67890123ABCDEF01234567 /* VoucherDetailView.swift */,
 			);
 			path = Views;
@@ -167,7 +164,6 @@
 			files = (
 				AC3AA845DF027B1E506CBCD2 /* AddVoucherView.swift in Sources */,
 				AA1B2C3D4E5F67890123ABCD /* BarcodeScannerView.swift in Sources */,
-				CC3D4E5F67890123ABCDEF01 /* ImagePicker.swift in Sources */,
 				EE5F67890123ABCDEF012345 /* VoucherDetailView.swift in Sources */,
 				DE968A86993F3D76D9B0CAD7 /* ContentView.swift in Sources */,
 				BFE2400FBF60150AF32C3752 /* DontForgetApp.swift in Sources */,

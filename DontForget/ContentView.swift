@@ -148,22 +148,14 @@ struct VoucherRowView: View {
             showingDetail = true
         } label: {
             HStack(spacing: 12) {
-                // Card image or icon
-                if let data = voucher.cardImageData, let uiImage = UIImage(data: data) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 60, height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 6))
-                } else {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color(.systemGray5))
-                        .frame(width: 60, height: 40)
-                        .overlay {
-                            Image(systemName: "creditcard")
-                                .foregroundStyle(.secondary)
-                        }
-                }
+                // Card icon
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color(.systemGray5))
+                    .frame(width: 60, height: 40)
+                    .overlay {
+                        Image(systemName: "creditcard")
+                            .foregroundStyle(.secondary)
+                    }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     // Title

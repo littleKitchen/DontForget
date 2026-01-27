@@ -19,7 +19,6 @@ struct AddVoucherView: View {
     @State private var barcodeFormat: String?
     @State private var expirationDate = Date()
     @State private var hasExpiration = false
-    @State private var cardImageData: Data?
     
     // Location
     @State private var useLocation = false
@@ -30,7 +29,6 @@ struct AddVoucherView: View {
     
     // Sheets
     @State private var showingBarcodeScanner = false
-    @State private var showingImagePicker = false
     
     var isEditing: Bool {
         editingVoucher != nil
@@ -96,40 +94,6 @@ struct AddVoucherView: View {
                     }
                 } header: {
                     Text("Barcode / Card Number")
-                }
-                
-                // Card Photo Section
-                Section {
-                    if let data = cardImageData, let uiImage = UIImage(data: data) {
-                        HStack {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 80)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                            
-                            Spacer()
-                            
-                            Button(role: .destructive) {
-                                cardImageData = nil
-                            } label: {
-                                Image(systemName: "trash")
-                            }
-                        }
-                    }
-                    
-                    Button {
-                        showingImagePicker = true
-                    } label: {
-                        Label(
-                            cardImageData != nil ? "Change Photo" : "Add Card Photo",
-                            systemImage: "camera"
-                        )
-                    }
-                } header: {
-                    Text("Card Photo")
-                } footer: {
-                    Text("Take a photo of your gift card to show at checkout")
                 }
                 
                 // Expiration Section
@@ -219,9 +183,6 @@ struct AddVoucherView: View {
             .sheet(isPresented: $showingBarcodeScanner) {
                 BarcodeScannerView(scannedCode: $barcodeData, codeFormat: $barcodeFormat)
             }
-            .sheet(isPresented: $showingImagePicker) {
-                ImagePicker(imageData: $cardImageData)
-            }
             .onAppear {
                 loadEditingVoucher()
             }
@@ -238,7 +199,6 @@ struct AddVoucherView: View {
         voucherCode = voucher.voucherCode ?? ""
         barcodeData = voucher.barcodeData
         barcodeFormat = voucher.barcodeFormat
-        cardImageData = voucher.cardImageData
         
         if let expDate = voucher.expirationDate {
             hasExpiration = true
@@ -264,8 +224,7 @@ struct AddVoucherView: View {
             expirationDate: hasExpiration ? expirationDate : nil,
             storeName: storeName.isEmpty ? nil : storeName,
             voucherValue: voucherValue.isEmpty ? nil : voucherValue,
-            balance: parsedBalance,
-            cardImageData: cardImageData
+            balance: parsedBalance
         )
         
         if isEditing {
