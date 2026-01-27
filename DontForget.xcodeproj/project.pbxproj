@@ -10,15 +10,17 @@
 		0A0D96CECDFC99D58564E58E /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B8F3FE0B8674DE0F97E950 /* LocationManager.swift */; };
 		2319330911C5F51CD009EB34 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D5C51869BD6A7D3431FC65 /* NotificationManager.swift */; };
 		A9CE17C40868C2557683954D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F903CA338DD5FAC9A0E04D43 /* Assets.xcassets */; };
-		AC3AA845DF027B1E506CBCD2 /* AddReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386A577C6E83965C3E7999A /* AddReminderView.swift */; };
+		AC3AA845DF027B1E506CBCD2 /* AddVoucherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386A577C6E83965C3E7999A /* AddVoucherView.swift */; };
 		BFE2400FBF60150AF32C3752 /* DontForgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09370FF0C8A831A45FCD7EA /* DontForgetApp.swift */; };
 		C216B24CB01487F02335174C /* Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2689854C7E99D6414AE3B23 /* Reminder.swift */; };
 		DE968A86993F3D76D9B0CAD7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B840A48C0BDB8B5F0BD88 /* ContentView.swift */; };
 		F3D1B90A115442EBB6F920B4 /* ReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761EF5FD9C6F5EB9CC73877C /* ReminderStore.swift */; };
+		AA1B2C3D4E5F67890123ABCD /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */; };
+		EE5F67890123ABCDEF012345 /* VoucherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF67890123ABCDEF01234567 /* VoucherDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0386A577C6E83965C3E7999A /* AddReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReminderView.swift; sourceTree = "<group>"; };
+		0386A577C6E83965C3E7999A /* AddVoucherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVoucherView.swift; sourceTree = "<group>"; };
 		2EEB0F0E96271CEA8851D8C4 /* DontForget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DontForget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		761EF5FD9C6F5EB9CC73877C /* ReminderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderStore.swift; sourceTree = "<group>"; };
 		95D5C51869BD6A7D3431FC65 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
@@ -28,6 +30,8 @@
 		F04B840A48C0BDB8B5F0BD88 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F903CA338DD5FAC9A0E04D43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FD080C2BE4D168621943371C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
+		FF67890123ABCDEF01234567 /* VoucherDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoucherDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -73,7 +77,9 @@
 		84F902AAB78F19DB38BA5CA0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				0386A577C6E83965C3E7999A /* AddReminderView.swift */,
+				0386A577C6E83965C3E7999A /* AddVoucherView.swift */,
+				BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */,
+				FF67890123ABCDEF01234567 /* VoucherDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -156,7 +162,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC3AA845DF027B1E506CBCD2 /* AddReminderView.swift in Sources */,
+				AC3AA845DF027B1E506CBCD2 /* AddVoucherView.swift in Sources */,
+				AA1B2C3D4E5F67890123ABCD /* BarcodeScannerView.swift in Sources */,
+				EE5F67890123ABCDEF012345 /* VoucherDetailView.swift in Sources */,
 				DE968A86993F3D76D9B0CAD7 /* ContentView.swift in Sources */,
 				BFE2400FBF60150AF32C3752 /* DontForgetApp.swift in Sources */,
 				0A0D96CECDFC99D58564E58E /* LocationManager.swift in Sources */,
@@ -235,7 +243,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -319,7 +327,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

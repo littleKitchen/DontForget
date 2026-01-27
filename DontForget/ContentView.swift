@@ -2,79 +2,29 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var store: ReminderStore
+    @State private var showingAddVoucher = false
+    @State private var selectedTab = 0
     
     var body: some View {
-        TabView {
-            RemindersListView()
-                .tabItem {
-                    Label("Reminders", systemImage: "bell.fill")
-                }
-            
+        TabView(selection: $selectedTab) {
             VouchersListView()
                 .tabItem {
-                    Label("Vouchers", systemImage: "ticket.fill")
+                    Label("Cards", systemImage: "creditcard.fill")
                 }
-        }
-    }
-}
-
-struct RemindersListView: View {
-    @EnvironmentObject var store: ReminderStore
-    @EnvironmentObject var notificationManager: NotificationManager
-    @State private var showingAddReminder = false
-    
-    var body: some View {
-        NavigationStack {
-            Group {
-                if store.activeReminders.filter({ !$0.isVoucher }).isEmpty {
-                    ContentUnavailableView {
-                        Label("No Reminders", systemImage: "bell.slash")
-                    } description: {
-                        Text("Add location-based reminders so you never forget.")
-                    } actions: {
-                        Button("Add Reminder") {
-                            showingAddReminder = true
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
-                } else {
-                    List {
-                        ForEach(store.activeReminders.filter { !$0.isVoucher }) { reminder in
-                            ReminderRowView(reminder: reminder)
-                                .swipeActions(edge: .trailing) {
-                                    Button(role: .destructive) {
-                                        notificationManager.cancelNotifications(for: reminder)
-                                        store.delete(reminder)
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
-                                    
-                                    Button {
-                                        store.toggleComplete(reminder)
-                                    } label: {
-                                        Label("Done", systemImage: "checkmark")
-                                    }
-                                    .tint(.green)
-                                }
-                        }
-                    }
-                    .listStyle(.plain)
+                .tag(0)
+            
+            ExpiringSoonView()
+                .tabItem {
+                    Label("Expiring", systemImage: "exclamationmark.triangle.fill")
                 }
-            }
-            .navigationTitle("Reminders")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showingAddReminder = true
-                    } label: {
-                        Image(systemName: "plus")
-                            .fontWeight(.semibold)
-                    }
+                .tag(1)
+                .badge(store.expiringSoonVouchers.count)
+            
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
                 }
-            }
-            .sheet(isPresented: $showingAddReminder) {
-                AddReminderView(isVoucher: false)
-            }
+                .tag(2)
         }
     }
 }
@@ -83,73 +33,93 @@ struct VouchersListView: View {
     @EnvironmentObject var store: ReminderStore
     @EnvironmentObject var notificationManager: NotificationManager
     @State private var showingAddVoucher = false
+    @State private var searchText = ""
+    
+    var filteredVouchers: [Reminder] {
+        if searchText.isEmpty {
+            return store.activeVouchers
+        }
+        return store.activeVouchers.filter {
+            $0.title.localizedCaseInsensitiveContains(searchText) ||
+            ($0.storeName?.localizedCaseInsensitiveContains(searchText) ?? false)
+        }
+    }
     
     var body: some View {
         NavigationStack {
             Group {
-                if store.vouchers.isEmpty {
+                if store.activeVouchers.isEmpty {
                     ContentUnavailableView {
-                        Label("No Vouchers", systemImage: "ticket")
+                        Label("No Gift Cards", systemImage: "creditcard")
                     } description: {
-                        Text("Track your gift cards and coupons so they never expire unused.")
+                        Text("Add your gift cards and never let them expire unused!")
                     } actions: {
-                        Button("Add Voucher") {
+                        Button("Add Gift Card") {
                             showingAddVoucher = true
                         }
                         .buttonStyle(.borderedProminent)
                     }
                 } else {
                     List {
-                        if !store.expiringSoonVouchers.isEmpty {
-                            Section("⚠️ Expiring Soon") {
-                                ForEach(store.expiringSoonVouchers) { voucher in
-                                    VoucherRowView(voucher: voucher)
-                                        .swipeActions(edge: .trailing) {
-                                            Button(role: .destructive) {
-                                                notificationManager.cancelNotifications(for: voucher)
-                                                store.delete(voucher)
-                                            } label: {
-                                                Label("Delete", systemImage: "trash")
-                                            }
-                                            
-                                            Button {
-                                                store.toggleComplete(voucher)
-                                            } label: {
-                                                Label("Used", systemImage: "checkmark")
-                                            }
-                                            .tint(.green)
-                                        }
+                        // Total balance header
+                        if store.totalBalance > 0 {
+                            Section {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text("Total Balance")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Text(String(format: "$%.2f", store.totalBalance))
+                                            .font(.title)
+                                            .fontWeight(.bold)
+                                            .foregroundStyle(.green)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "creditcard.fill")
+                                        .font(.largeTitle)
+                                        .foregroundStyle(.green.opacity(0.3))
                                 }
+                                .padding(.vertical, 8)
                             }
                         }
                         
-                        let otherVouchers = store.vouchers.filter { !$0.isExpiringSoon }
-                        if !otherVouchers.isEmpty {
-                            Section("All Vouchers") {
-                                ForEach(otherVouchers) { voucher in
-                                    VoucherRowView(voucher: voucher)
-                                        .swipeActions(edge: .trailing) {
-                                            Button(role: .destructive) {
-                                                notificationManager.cancelNotifications(for: voucher)
-                                                store.delete(voucher)
-                                            } label: {
-                                                Label("Delete", systemImage: "trash")
-                                            }
-                                            
-                                            Button {
-                                                store.toggleComplete(voucher)
-                                            } label: {
-                                                Label("Used", systemImage: "checkmark")
-                                            }
-                                            .tint(.green)
+                        // Vouchers list
+                        Section {
+                            ForEach(filteredVouchers) { voucher in
+                                VoucherRowView(voucher: voucher)
+                                    .swipeActions(edge: .trailing) {
+                                        Button(role: .destructive) {
+                                            notificationManager.cancelNotifications(for: voucher)
+                                            store.delete(voucher)
+                                        } label: {
+                                            Label("Delete", systemImage: "trash")
                                         }
-                                }
+                                        
+                                        Button {
+                                            store.markAsUsed(voucher)
+                                        } label: {
+                                            Label("Used", systemImage: "checkmark")
+                                        }
+                                        .tint(.green)
+                                    }
+                                    .swipeActions(edge: .leading) {
+                                        Button {
+                                            // TODO: Quick balance update
+                                        } label: {
+                                            Label("Update Balance", systemImage: "dollarsign.circle")
+                                        }
+                                        .tint(.orange)
+                                    }
                             }
+                        } header: {
+                            Text("\(filteredVouchers.count) Cards")
                         }
                     }
+                    .listStyle(.insetGrouped)
+                    .searchable(text: $searchText, prompt: "Search cards")
                 }
             }
-            .navigationTitle("Vouchers")
+            .navigationTitle("Gift Cards")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -161,98 +131,166 @@ struct VouchersListView: View {
                 }
             }
             .sheet(isPresented: $showingAddVoucher) {
-                AddReminderView(isVoucher: true)
+                AddVoucherView()
             }
         }
-    }
-}
-
-struct ReminderRowView: View {
-    let reminder: Reminder
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(reminder.title)
-                .font(.headline)
-            
-            if let location = reminder.location {
-                HStack {
-                    Image(systemName: "location.fill")
-                        .foregroundStyle(.blue)
-                    Text(location.name)
-                }
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            }
-            
-            if let notes = reminder.notes, !notes.isEmpty {
-                Text(notes)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-        }
-        .padding(.vertical, 4)
     }
 }
 
 struct VoucherRowView: View {
     let voucher: Reminder
+    @EnvironmentObject var store: ReminderStore
+    @State private var showingDetail = false
+    @State private var showingEditSheet = false
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack {
+        Button {
+            showingDetail = true
+        } label: {
+            HStack(spacing: 12) {
+                // Card icon
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color(.systemGray5))
+                    .frame(width: 60, height: 40)
+                    .overlay {
+                        Image(systemName: "creditcard")
+                            .foregroundStyle(.secondary)
+                    }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    // Title
                     Text(voucher.title)
                         .font(.headline)
+                        .foregroundStyle(.primary)
                     
-                    if let value = voucher.voucherValue {
+                    // Store + location
+                    HStack(spacing: 6) {
+                        if let store = voucher.storeName {
+                            Text(store)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        if voucher.location != nil {
+                            Image(systemName: "location.fill")
+                                .font(.caption2)
+                                .foregroundStyle(.blue)
+                        }
+                        
+                        if voucher.hasBarcode {
+                            Image(systemName: "barcode")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                // Balance and expiry
+                VStack(alignment: .trailing, spacing: 4) {
+                    if let balance = voucher.formattedBalance {
+                        Text(balance)
+                            .font(.headline)
+                            .foregroundStyle(.green)
+                    } else if let value = voucher.voucherValue {
                         Text(value)
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(Color.green)
-                            .clipShape(Capsule())
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
                     }
-                }
-                
-                if let store = voucher.storeName {
-                    HStack {
-                        Image(systemName: "storefront.fill")
-                        Text(store)
+                    
+                    if let days = voucher.daysUntilExpiry {
+                        HStack(spacing: 2) {
+                            if days <= 7 {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.caption2)
+                            }
+                            Text(days == 0 ? "Today" : "\(days)d")
+                                .font(.caption)
+                        }
+                        .foregroundStyle(days <= 3 ? .red : (days <= 7 ? .orange : .secondary))
                     }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                }
-                
-                if let location = voucher.location {
-                    HStack {
-                        Image(systemName: "location.fill")
-                            .foregroundStyle(.blue)
-                        Text(location.name)
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
                 }
             }
-            
-            Spacer()
-            
-            if let days = voucher.daysUntilExpiry {
-                VStack {
-                    Text("\(days)")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundStyle(days <= 3 ? .red : (days <= 7 ? .orange : .primary))
-                    Text("days")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-            }
+            .padding(.vertical, 4)
         }
-        .padding(.vertical, 4)
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showingDetail) {
+            VoucherDetailView(voucher: voucher)
+        }
+    }
+}
+
+struct ExpiringSoonView: View {
+    @EnvironmentObject var store: ReminderStore
+    @EnvironmentObject var notificationManager: NotificationManager
+    
+    var body: some View {
+        NavigationStack {
+            Group {
+                if store.expiringSoonVouchers.isEmpty {
+                    ContentUnavailableView {
+                        Label("All Good!", systemImage: "checkmark.circle")
+                    } description: {
+                        Text("No cards expiring in the next 7 days")
+                    }
+                } else {
+                    List {
+                        ForEach(store.expiringSoonVouchers.sorted { ($0.daysUntilExpiry ?? 999) < ($1.daysUntilExpiry ?? 999) }) { voucher in
+                            VoucherRowView(voucher: voucher)
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        notificationManager.cancelNotifications(for: voucher)
+                                        store.delete(voucher)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    
+                                    Button {
+                                        store.markAsUsed(voucher)
+                                    } label: {
+                                        Label("Used", systemImage: "checkmark")
+                                    }
+                                    .tint(.green)
+                                }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Expiring Soon")
+        }
+    }
+}
+
+struct SettingsView: View {
+    @AppStorage("notifyDaysBefore") private var notifyDaysBefore = 7
+    @AppStorage("notifyOnArrival") private var notifyOnArrival = true
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Notifications") {
+                    Stepper("Notify \(notifyDaysBefore) days before expiry", value: $notifyDaysBefore, in: 1...30)
+                    Toggle("Notify when near store", isOn: $notifyOnArrival)
+                }
+                
+                Section("About") {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text("1.0.0")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                
+                Section {
+                    Link(destination: URL(string: "https://github.com/littleKitchen/DontForget")!) {
+                        Label("View on GitHub", systemImage: "link")
+                    }
+                }
+            }
+            .navigationTitle("Settings")
+        }
     }
 }
 
