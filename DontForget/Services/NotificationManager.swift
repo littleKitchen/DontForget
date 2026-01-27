@@ -1,5 +1,6 @@
 import Foundation
 import UserNotifications
+import CoreLocation
 
 class NotificationManager: ObservableObject {
     @Published var isAuthorized = false
@@ -12,34 +13,39 @@ class NotificationManager: ObservableObject {
         }
     }
     
-    func scheduleLocationNotification(for reminder: Reminder) {
-        guard let location = reminder.location else { return }
+    func scheduleLocationNotification(for voucher: Reminder) {
+        guard let location = voucher.location else { return }
         
         let content = UNMutableNotificationContent()
         content.title = "📍 You're near \(location.name)!"
         
-        if reminder.isVoucher, let value = reminder.voucherValue, let days = reminder.daysUntilExpiry {
-            content.body = "Don't forget: \(reminder.title) (\(value)) — expires in \(days) days!"
-        } else {
-            content.body = reminder.title
-            if let notes = reminder.notes {
-                content.body += "\n\(notes)"
-            }
+        var body = "Don't forget: \(voucher.title)"
+        
+        if let balance = voucher.formattedBalance {
+            body += " (\(balance) remaining)"
+        } else if let value = voucher.voucherValue {
+            body += " (\(value))"
         }
         
+        if let days = voucher.daysUntilExpiry, days <= 7 {
+            body += " — expires in \(days) days!"
+        }
+        
+        content.body = body
         content.sound = .default
+        content.categoryIdentifier = "VOUCHER_NEARBY"
         
         let region = CLCircularRegion(
             center: location.coordinate,
             radius: location.radius,
-            identifier: reminder.id.uuidString
+            identifier: voucher.id.uuidString
         )
-        region.notifyOnEntry = reminder.triggerOnArrival
-        region.notifyOnExit = !reminder.triggerOnArrival
+        region.notifyOnEntry = true
+        region.notifyOnExit = false
         
         let trigger = UNLocationNotificationTrigger(region: region, repeats: true)
         let request = UNNotificationRequest(
-            identifier: "location-\(reminder.id.uuidString)",
+            identifier: "location-\(voucher.id.uuidString)",
             content: content,
             trigger: trigger
         )
@@ -47,53 +53,115 @@ class NotificationManager: ObservableObject {
         UNUserNotificationCenter.current().add(request)
     }
     
-    func scheduleExpirationNotification(for reminder: Reminder) {
-        guard let expirationDate = reminder.expirationDate else { return }
+    func scheduleExpirationNotification(for voucher: Reminder) {
+        guard let expirationDate = voucher.expirationDate else { return }
         
-        // Schedule notifications at 7 days, 3 days, 1 day before
-        let intervals: [(days: Int, message: String)] = [
-            (7, "expires in 1 week"),
-            (3, "expires in 3 days"),
-            (1, "expires tomorrow!")
+        // Schedule notifications for 7 days, 3 days, and 1 day before
+        let intervals: [(days: Int, urgency: String)] = [
+            (7, ""),
+            (3, "⚠️ "),
+            (1, "🚨 ")
         ]
         
-        for interval in intervals {
-            guard let triggerDate = Calendar.current.date(byAdding: .day, value: -interval.days, to: expirationDate),
-                  triggerDate > Date() else { continue }
-            
-            let content = UNMutableNotificationContent()
-            content.title = "⏰ \(reminder.title) \(interval.message)"
-            
-            if let value = reminder.voucherValue, let store = reminder.storeName {
-                content.body = "\(value) at \(store) — use it before it's gone!"
-            } else {
-                content.body = "Don't let it expire unused!"
+        for (days, urgency) in intervals {
+            guard let triggerDate = Calendar.current.date(byAdding: .day, value: -days, to: expirationDate),
+                  triggerDate > Date() else {
+                continue
             }
             
-            content.sound = .default
+            let content = UNMutableNotificationContent()
+            content.title = "\(urgency)\(voucher.title) expires in \(days) day\(days == 1 ? "" : "s")!"
             
-            let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+            var body = ""
+            if let store = voucher.storeName {
+                body = "Use it at \(store)"
+            }
+            if let balance = voucher.formattedBalance {
+                body += body.isEmpty ? "\(balance) remaining" : " — \(balance) remaining"
+            }
+            
+            content.body = body.isEmpty ? "Don't let it go to waste!" : body
+            content.sound = .default
+            content.categoryIdentifier = "VOUCHER_EXPIRING"
+            
+            let components = Calendar.current.dateComponents([.year, .month, .day, .hour], from: triggerDate)
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
             
             let request = UNNotificationRequest(
-                identifier: "expiry-\(interval.days)-\(reminder.id.uuidString)",
+                identifier: "expiry-\(days)-\(voucher.id.uuidString)",
                 content: content,
                 trigger: trigger
             )
             
             UNUserNotificationCenter.current().add(request)
         }
+        
+        // Also schedule for the actual expiration day
+        let content = UNMutableNotificationContent()
+        content.title = "🚨 \(voucher.title) expires TODAY!"
+        content.body = "Last chance to use it!"
+        content.sound = .default
+        content.categoryIdentifier = "VOUCHER_EXPIRING"
+        
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: expirationDate)
+        components.hour = 9 // 9 AM on expiration day
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        let request = UNNotificationRequest(
+            identifier: "expiry-day-\(voucher.id.uuidString)",
+            content: content,
+            trigger: trigger
+        )
+        
+        UNUserNotificationCenter.current().add(request)
     }
     
-    func cancelNotifications(for reminder: Reminder) {
+    func cancelNotifications(for voucher: Reminder) {
         let identifiers = [
-            "location-\(reminder.id.uuidString)",
-            "expiry-7-\(reminder.id.uuidString)",
-            "expiry-3-\(reminder.id.uuidString)",
-            "expiry-1-\(reminder.id.uuidString)"
+            "location-\(voucher.id.uuidString)",
+            "expiry-7-\(voucher.id.uuidString)",
+            "expiry-3-\(voucher.id.uuidString)",
+            "expiry-1-\(voucher.id.uuidString)",
+            "expiry-day-\(voucher.id.uuidString)"
         ]
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
     }
+    
+    func setupCategories() {
+        // Voucher nearby actions
+        let useNowAction = UNNotificationAction(
+            identifier: "USE_NOW",
+            title: "Show Card",
+            options: [.foreground]
+        )
+        
+        let remindLaterAction = UNNotificationAction(
+            identifier: "REMIND_LATER",
+            title: "Remind in 1 hour",
+            options: []
+        )
+        
+        let nearbyCategory = UNNotificationCategory(
+            identifier: "VOUCHER_NEARBY",
+            actions: [useNowAction, remindLaterAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        
+        // Expiring voucher actions
+        let viewAction = UNNotificationAction(
+            identifier: "VIEW",
+            title: "View Card",
+            options: [.foreground]
+        )
+        
+        let expiringCategory = UNNotificationCategory(
+            identifier: "VOUCHER_EXPIRING",
+            actions: [viewAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        
+        UNUserNotificationCenter.current().setNotificationCategories([nearbyCategory, expiringCategory])
+    }
 }
-
-import CoreLocation
