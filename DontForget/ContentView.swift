@@ -3,7 +3,15 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var store: ReminderStore
     @State private var showingAddVoucher = false
-    @State private var selectedTab = 0
+    @State private var selectedTab = ContentView.initialTab
+    
+    private static var initialTab: Int {
+        #if DEBUG
+        if CommandLine.arguments.contains("-SCREENSHOT_EXPIRING") { return 1 }
+        if CommandLine.arguments.contains("-SCREENSHOT_SETTINGS") { return 2 }
+        #endif
+        return 0
+    }
     
     var body: some View {
         TabView(selection: $selectedTab) {

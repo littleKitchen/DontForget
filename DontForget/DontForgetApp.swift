@@ -13,8 +13,17 @@ struct DontForgetApp: App {
                 .environmentObject(locationManager)
                 .environmentObject(notificationManager)
                 .onAppear {
+                    #if DEBUG
+                    let isScreenshotMode = CommandLine.arguments.contains("-NO_PERMISSIONS") ||
+                                          CommandLine.arguments.contains(where: { $0.hasPrefix("-SCREENSHOT_") })
+                    if !isScreenshotMode {
+                        notificationManager.requestPermission()
+                        locationManager.requestPermission()
+                    }
+                    #else
                     notificationManager.requestPermission()
                     locationManager.requestPermission()
+                    #endif
                 }
         }
     }
