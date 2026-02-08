@@ -10,13 +10,13 @@
 		0A0D96CECDFC99D58564E58E /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B8F3FE0B8674DE0F97E950 /* LocationManager.swift */; };
 		2319330911C5F51CD009EB34 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D5C51869BD6A7D3431FC65 /* NotificationManager.swift */; };
 		A9CE17C40868C2557683954D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F903CA338DD5FAC9A0E04D43 /* Assets.xcassets */; };
+		AA1B2C3D4E5F67890123ABCD /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */; };
 		AC3AA845DF027B1E506CBCD2 /* AddVoucherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386A577C6E83965C3E7999A /* AddVoucherView.swift */; };
 		BFE2400FBF60150AF32C3752 /* DontForgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09370FF0C8A831A45FCD7EA /* DontForgetApp.swift */; };
 		C216B24CB01487F02335174C /* Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2689854C7E99D6414AE3B23 /* Reminder.swift */; };
 		DE968A86993F3D76D9B0CAD7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04B840A48C0BDB8B5F0BD88 /* ContentView.swift */; };
-		F3D1B90A115442EBB6F920B4 /* ReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761EF5FD9C6F5EB9CC73877C /* ReminderStore.swift */; };
-		AA1B2C3D4E5F67890123ABCD /* BarcodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */; };
 		EE5F67890123ABCDEF012345 /* VoucherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF67890123ABCDEF01234567 /* VoucherDetailView.swift */; };
+		F3D1B90A115442EBB6F920B4 /* ReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761EF5FD9C6F5EB9CC73877C /* ReminderStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,13 +24,13 @@
 		2EEB0F0E96271CEA8851D8C4 /* DontForget.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DontForget.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		761EF5FD9C6F5EB9CC73877C /* ReminderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderStore.swift; sourceTree = "<group>"; };
 		95D5C51869BD6A7D3431FC65 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		D09370FF0C8A831A45FCD7EA /* DontForgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DontForgetApp.swift; sourceTree = "<group>"; };
 		D2689854C7E99D6414AE3B23 /* Reminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminder.swift; sourceTree = "<group>"; };
 		E0B8F3FE0B8674DE0F97E950 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		F04B840A48C0BDB8B5F0BD88 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F903CA338DD5FAC9A0E04D43 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FD080C2BE4D168621943371C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		BB2C3D4E5F67890123ABCDEF /* BarcodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerView.swift; sourceTree = "<group>"; };
 		FF67890123ABCDEF01234567 /* VoucherDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoucherDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -122,11 +122,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2620;
-				TargetAttributes = {
-					22FF6C688873F356294BDC70 = {
-						DevelopmentTeam = "";
-					};
-				};
 			};
 			buildConfigurationList = 2A6119C4D40DF8EB08555DF4 /* Build configuration list for PBXProject "DontForget" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -182,6 +177,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = FL4HNAHLNK;
 				INFOPLIST_FILE = DontForget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -260,6 +256,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = FL4HNAHLNK;
 				INFOPLIST_FILE = DontForget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
